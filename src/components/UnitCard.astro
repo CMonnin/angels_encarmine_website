@@ -1,0 +1,32 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { url } from '../lib/url';
+
+interface Props {
+  unit: CollectionEntry<'units'>;
+}
+
+const { unit } = Astro.props;
+const cover = unit.data.photos[0];
+---
+
+<li class="unit-card">
+  <a href={url(`/units/${unit.id}/`)}>
+    {
+      cover ? (
+        <div class="thumb">
+          <Image src={cover.src} alt={cover.alt} width={640} format="webp" />
+        </div>
+      ) : (
+        <div class="thumb empty">Not yet photographed</div>
+      )
+    }
+    <div class="meta">
+      <h3>{unit.data.name}</h3>
+      <p>
+        {unit.data.company !== 'None' && `${unit.data.company} Company · `}{unit.data.role}
+      </p>
+    </div>
+  </a>
+</li>

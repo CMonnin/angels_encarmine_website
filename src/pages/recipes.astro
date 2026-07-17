@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import { PAINT_RECIPES, PAINT_RECIPE_ORDER, DEFAULT_PRIMER } from '../data/paint-recipes';
+---
+
+<Base title="Painting Recipes">
+  <h1>Painting Recipes</h1>
+  <p class="lede">
+    The army's standard paint scheme, broken down by area. Every model is primed <strong
+      >{DEFAULT_PRIMER}</strong
+    > unless its area lists its own primer.
+  </p>
+
+  {
+    PAINT_RECIPE_ORDER.map((slug) => {
+      const area = PAINT_RECIPES[slug];
+      return (
+        <section id={area.slug}>
+          <h2>{area.label}</h2>
+          <table class="recipe-table">
+            <tbody>
+              {area.primer && (
+                <tr>
+                  <th>Prime</th>
+                  <td>{area.primer}</td>
+                </tr>
+              )}
+              {area.steps.map((step, i) => (
+                <tr>
+                  <th>{i + 1}</th>
+                  <td>{step}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      );
+    })
+  }
+</Base>

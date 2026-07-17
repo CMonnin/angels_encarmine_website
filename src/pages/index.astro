@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import UnitCard from '../components/UnitCard.astro';
+import { url } from '../lib/url';
+
+const units = await getCollection('units');
+const photographed = units
+  .filter((u) => u.data.photos.length > 0)
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<Base title="Home">
+  <div class="hero">
+    <h1>Angels Encarmine</h1>
+    <p class="lede" style="margin: 1rem auto 0;">
+      A Warhammer 40,000 army in progress, sons of Sanguinius, painted one unit at a time.
+    </p>
+    <p class="motto">"By the Blood of the Great Angel."</p>
+  </div>
+
+  <h2>From the gallery</h2>
+  {
+    photographed.length > 0 ? (
+      <ul class="card-grid">
+        {photographed.map((unit) => (
+          <UnitCard unit={unit} />
+        ))}
+      </ul>
+    ) : (
+      <p class="lede">No units photographed yet; the paint queue is moving.</p>
+    )
+  }
+  <p>
+    <a href={url('/gallery/')}>Full gallery →</a> · <a href={url('/roster/')}>Army roster →</a> ·
+    <a href={url('/lore/')}>Chapter lore →</a>
+  </p>
+</Base>

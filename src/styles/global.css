@@ -1,0 +1,374 @@
+/* Gruvbox dark palette */
+:root {
+  --bg: #1d2021;
+  --surface: #282828;
+  --surface-raised: #3c3836;
+  --border: #504945;
+  --red: #cc241d;
+  --red-bright: #fb4934;
+  --gold: #d79921;
+  --gold-bright: #fabd2f;
+  --blue: #458588;
+  --text: #ebdbb2;
+  --text-muted: #a89984;
+  --serif: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+  --sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  line-height: 1.6;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--serif);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+h1 {
+  font-size: 2.4rem;
+  margin: 0 0 0.5rem;
+}
+
+h1::after {
+  content: '';
+  display: block;
+  width: 4rem;
+  height: 2px;
+  margin-top: 0.75rem;
+  background: linear-gradient(to right, var(--red-bright), var(--gold));
+}
+
+a {
+  color: var(--gold);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--red-bright);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+main {
+  flex: 1;
+  width: 100%;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+.site-header {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.site-header .inner {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 2rem;
+}
+
+.site-title {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  color: var(--text);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.site-title:hover {
+  color: var(--gold);
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.site-nav a {
+  color: var(--text-muted);
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current='page'] {
+  color: var(--gold);
+}
+
+.lede {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  max-width: 46rem;
+  margin: 0 0 2rem;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 1.25rem;
+  padding: 0;
+  margin: 2rem 0;
+  list-style: none;
+}
+
+.unit-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.unit-card:hover {
+  border-color: var(--red);
+}
+
+.unit-card a {
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.unit-card .thumb {
+  aspect-ratio: 4 / 3;
+  background: var(--surface-raised);
+  overflow: hidden;
+}
+
+.unit-card .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.unit-card .thumb.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+
+.unit-card .meta {
+  padding: 0.9rem 1rem 1rem;
+}
+
+.unit-card .meta h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.1rem;
+}
+
+.unit-card .meta p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.1rem 0.45rem;
+  margin-bottom: 0.5rem;
+}
+
+.roster-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+}
+
+.roster-table th,
+.roster-table td {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.roster-table th {
+  font-family: var(--serif);
+  letter-spacing: 0.05em;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.roster-table.sortable th[data-sort] {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-right: 1.5rem;
+}
+
+.roster-table.sortable th[data-sort]:hover {
+  color: var(--gold-bright);
+}
+
+.roster-table.sortable th[data-sort]::after {
+  content: '↕';
+  position: absolute;
+  right: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.8em;
+}
+
+.roster-table.sortable th[aria-sort='ascending']::after {
+  content: '↑';
+  color: var(--gold-bright);
+}
+
+.roster-table.sortable th[aria-sort='descending']::after {
+  content: '↓';
+  color: var(--gold-bright);
+}
+
+.roster-table td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.roster-table th.num {
+  text-align: right;
+}
+
+.roster-table tfoot td {
+  font-weight: 700;
+  border-top: 2px solid var(--red);
+  border-bottom: none;
+}
+
+.recipe-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0 2rem;
+}
+
+.recipe-table th,
+.recipe-table td {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.recipe-table th {
+  color: var(--gold);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.prose {
+  max-width: 46rem;
+}
+
+.prose p {
+  margin: 0 0 1rem;
+}
+
+.prose h2 {
+  margin: 2.25rem 0 0.75rem;
+  font-size: 1.5rem;
+}
+
+.prose blockquote {
+  margin: 1.5rem 0;
+  padding: 0.25rem 0 0.25rem 1.25rem;
+  border-left: 3px solid var(--red);
+  color: var(--text-muted);
+  font-family: var(--serif);
+  font-style: italic;
+}
+
+.photo-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.photo-strip figure {
+  margin: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.photo-strip figcaption {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.hero {
+  text-align: center;
+  padding: 3rem 0 2rem;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.hero h1::after {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero .motto {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--gold);
+  font-size: 1.2rem;
+  margin-top: 1rem;
+}
+
+.swatch {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  margin-right: 0.4rem;
+  vertical-align: baseline;
+}

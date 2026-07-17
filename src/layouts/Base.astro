@@ -1,0 +1,50 @@
+---
+import '../styles/global.css';
+import { url } from '../lib/url';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'The Angels Encarmine: a Warhammer 40,000 army showcase.' } =
+  Astro.props;
+
+const navItems = [
+  { href: url('/'), label: 'Home' },
+  { href: url('/gallery/'), label: 'Gallery' },
+  { href: url('/roster/'), label: 'Roster' },
+  { href: url('/recipes/'), label: 'Recipes' },
+  { href: url('/lore/'), label: 'Lore' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title} · Angels Encarmine</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="inner">
+        <a class="site-title" href={url('/')}>Angels Encarmine</a>
+        <nav class="site-nav">
+          {
+            navItems.map((item) => (
+              <a href={item.href} aria-current={currentPath === item.href ? 'page' : undefined}>
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+    </header>
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>

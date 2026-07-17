@@ -1,0 +1,70 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { url } from '../../lib/url';
+import { PAINT_RECIPES } from '../../data/paint-recipes';
+
+export async function getStaticPaths() {
+  const units = await getCollection('units');
+  return units.map((unit) => ({
+    params: { slug: unit.id },
+    props: { unit },
+  }));
+}
+
+interface Props {
+  unit: CollectionEntry<'units'>;
+}
+
+const { unit } = Astro.props;
+const { Content } = await render(unit);
+---
+
+<Base title={unit.data.name}>
+  <p class="badge">{unit.data.role}</p>
+  <h1>{unit.data.name}</h1>
+  <p class="lede">
+    {unit.data.company !== 'None' && `${unit.data.company} Company`}
+    {unit.data.company !== 'None' && unit.data.remarks && ' · '}
+    {unit.data.remarks}
+  </p>
+
+  {
+    unit.data.photos.length > 0 ? (
+      <div class="photo-strip">
+        {unit.data.photos.map((photo) => (
+          <figure>
+            <Image src={photo.src} alt={photo.alt} width={960} format="webp" />
+            <figcaption>{photo.alt}</figcaption>
+          </figure>
+        ))}
+      </div>
+    ) : (
+      <p>
+        <em>Not yet photographed.</em>
+      </p>
+    )
+  }
+
+  <div class="prose">
+    <Content />
+  </div>
+
+  {
+    unit.data.recipeAreas.length > 0 && (
+      <>
+        <h2>Paint recipe</h2>
+        <p>
+          {unit.data.recipeAreas.map((slug, i) => (
+            <>
+              {i > 0 && ' · '}
+              <a href={url(`/recipes/#${slug}`)}>{PAINT_RECIPES[slug].label}</a>
+            </>
+          ))}
+        </p>
+      </>
+    )
+  }
+</Base>

@@ -1,0 +1,117 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { url } from '../lib/url';
+
+const units = await getCollection('units');
+const sorted = [...units].sort((a, b) => a.data.order - b.data.order);
+
+function companySortKey(company: string): string {
+  // "None" sorts after every numbered company; numbers pad so "10th" > "2nd".
+  if (company === 'None') return '99';
+  const n = parseInt(company, 10);
+  return Number.isNaN(n) ? company : String(n).padStart(2, '0');
+}
+
+const helmetColours = [
+  { role: 'Command', helmet: 'Red or Gold', swatches: ['#cc241d', '#d79921'] },
+  { role: 'Veteran', helmet: 'White', swatches: ['#ebdbb2'] },
+  { role: 'Close Support', helmet: 'Yellow', swatches: ['#fabd2f'] },
+  { role: 'Fire Support', helmet: 'Blue', swatches: ['#458588'] },
+  { role: 'Battleline', helmet: 'Red', swatches: ['#cc241d'] },
+];
+---
+
+<Base title="Roster">
+  <h1>Army Roster</h1>
+  <p class="lede">The full muster of the collection, with company and heraldry markings.</p>
+
+  <table class="roster-table sortable" id="unit-roster">
+    <thead>
+      <tr>
+        <th data-sort="text">Unit</th>
+        <th data-sort="text">Company</th>
+        <th data-sort="text">Role Marking</th>
+        <th data-sort="text">Remarks</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        sorted.map((unit) => (
+          <tr>
+            <td data-value={unit.data.name}>
+              <a href={url(`/units/${unit.id}/`)}>{unit.data.name}</a>
+            </td>
+            <td data-value={companySortKey(unit.data.company)}>{unit.data.company}</td>
+            <td>{unit.data.role}</td>
+            <td>{unit.data.remarks ?? ''}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  <h2>Helmet Colours by Role</h2>
+  <table class="roster-table">
+    <thead>
+      <tr>
+        <th>Role</th>
+        <th>Helmet Colour</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        helmetColours.map((row) => (
+          <tr>
+            <td>{row.role}</td>
+            <td>
+              {row.swatches.map((colour) => (
+                <span class="swatch" style={`background: ${colour}`} />
+              ))}
+              {row.helmet}
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  <h2>General Heraldry</h2>
+  <div class="prose">
+    <ul>
+      <li>Pauldrons follow the Flesh Tearers style</li>
+      <li>Force organization marking is a blood drop in the company colour</li>
+    </ul>
+  </div>
+</Base>
+
+<script>
+  function initSortableTable(table: HTMLTableElement) {
+    const tbody = table.tBodies[0];
+    const headers = Array.from(table.querySelectorAll('th[data-sort]'));
+
+    headers.forEach((th, columnIndex) => {
+      th.addEventListener('click', () => {
+        const currentDirection = th.getAttribute('aria-sort');
+        const direction = currentDirection === 'ascending' ? 'descending' : 'ascending';
+
+        headers.forEach((h) => h.removeAttribute('aria-sort'));
+        th.setAttribute('aria-sort', direction);
+
+        const rows = Array.from(tbody.rows);
+        rows.sort((a, b) => {
+          const cellA = a.cells[columnIndex];
+          const cellB = b.cells[columnIndex];
+          const valueA = (cellA.dataset.value ?? cellA.textContent ?? '').trim().toLowerCase();
+          const valueB = (cellB.dataset.value ?? cellB.textContent ?? '').trim().toLowerCase();
+          const comparison = valueA.localeCompare(valueB, undefined, { numeric: true });
+          return direction === 'ascending' ? comparison : -comparison;
+        });
+
+        rows.forEach((row) => tbody.appendChild(row));
+      });
+    });
+  }
+
+  document.querySelectorAll<HTMLTableElement>('table.sortable').forEach(initSortableTable);
+</script>

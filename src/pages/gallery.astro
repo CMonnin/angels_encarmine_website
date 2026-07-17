@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import UnitCard from '../components/UnitCard.astro';
+
+const units = await getCollection('units');
+const photographed = units
+  .filter((u) => u.data.photos.length > 0)
+  .sort((a, b) => a.data.order - b.data.order);
+const unphotographed = units
+  .filter((u) => u.data.photos.length === 0)
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<Base title="Gallery">
+  <h1>Gallery</h1>
+  <p class="lede">The painted Angels Encarmine, photographed unit by unit.</p>
+
+  <ul class="card-grid">
+    {photographed.map((unit) => <UnitCard unit={unit} />)}
+  </ul>
+
+  {
+    unphotographed.length > 0 && (
+      <>
+        <h2>On the painting table</h2>
+        <ul class="card-grid">
+          {unphotographed.map((unit) => (
+            <UnitCard unit={unit} />
+          ))}
+        </ul>
+      </>
+    )
+  }
+</Base>
