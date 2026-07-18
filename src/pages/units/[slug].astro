@@ -33,26 +33,27 @@ const { Content } = await render(unit);
 
   {
     unit.data.photos.length > 0 ? (
-      <div class="photo-strip">
-        {unit.data.photos.map((photo) => (
-          <figure>
-            <a href={photo.src.src} class="photo-link" data-full={photo.src.src}>
-              <Image src={photo.src} alt={photo.alt} width={960} format="webp" />
-            </a>
-            <figcaption>{photo.alt}</figcaption>
-          </figure>
-        ))}
-      </div>
+      <>
+        <div class="photo-strip">
+          {unit.data.photos.map((photo) => (
+            <figure>
+              <a href={photo.src.src} class="photo-link">
+                <Image src={photo.src} alt={photo.alt} width={960} format="webp" />
+              </a>
+              <figcaption>{photo.alt}</figcaption>
+            </figure>
+          ))}
+        </div>
+        <dialog id="lightbox">
+          <img id="lightbox-img" src="" alt="" />
+        </dialog>
+      </>
     ) : (
       <p>
         <em>Not yet photographed.</em>
       </p>
     )
   }
-
-  <dialog id="lightbox">
-    <img id="lightbox-img" src="" alt="" />
-  </dialog>
 
   <div class="prose">
     <Content />
@@ -98,21 +99,21 @@ const { Content } = await render(unit);
 </style>
 
 <script>
-  const lightbox = document.getElementById('lightbox') as HTMLDialogElement;
-  const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+  const lightbox = document.querySelector<HTMLDialogElement>('#lightbox');
+  const lightboxImg = document.querySelector<HTMLImageElement>('#lightbox-img');
 
-  document.querySelectorAll<HTMLAnchorElement>('.photo-link').forEach((link) => {
-    link.addEventListener('click', (event) => {
-      event.preventDefault();
-      const full = link.dataset.full;
-      if (!full) return;
-      lightboxImg.src = full;
-      lightboxImg.alt = link.querySelector('img')?.alt ?? '';
-      lightbox.showModal();
+  if (lightbox && lightboxImg) {
+    document.querySelectorAll<HTMLAnchorElement>('.photo-link').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        lightboxImg.src = link.href;
+        lightboxImg.alt = link.querySelector('img')?.alt ?? '';
+        lightbox.showModal();
+      });
     });
-  });
 
-  lightbox.addEventListener('click', (event) => {
-    if (event.target === lightbox) lightbox.close();
-  });
+    lightbox.addEventListener('click', (event) => {
+      if (event.target === lightbox) lightbox.close();
+    });
+  }
 </script>

@@ -19,8 +19,6 @@ const units = defineCollection({
         'Fire Support',
       ]),
       remarks: z.string().optional(),
-      points: z.number().int().nonnegative().optional(),
-      models: z.number().int().positive().optional(),
       photos: z
         .array(
           z.object({

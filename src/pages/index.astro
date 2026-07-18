@@ -5,8 +5,8 @@ import UnitCard from '../components/UnitCard.astro';
 import { url } from '../lib/url';
 
 const units = await getCollection('units');
-const photographed = units
-  .filter((u) => u.data.photos.length > 0)
+const featured = units
+  .filter((u) => u.data.featured && u.data.photos.length > 0)
   .sort((a, b) => a.data.order - b.data.order);
 ---
 
@@ -21,9 +21,9 @@ const photographed = units
 
   <h2>From the gallery</h2>
   {
-    photographed.length > 0 ? (
+    featured.length > 0 ? (
       <ul class="card-grid">
-        {photographed.map((unit) => (
+        {featured.map((unit) => (
           <UnitCard unit={unit} />
         ))}
       </ul>

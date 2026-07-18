@@ -7,8 +7,9 @@ deployed to GitHub Pages.
 ## Adding a unit
 
 1. Create `src/content/units/<slug>.md` with frontmatter (`name`, `company`,
-   `role`, optional `remarks`, `points`, `models`, `photos`, and `recipe`,
+   `role`, `order`, optional `remarks`, `photos`, `recipeAreas`, and `featured`,
    see an existing unit for the shape). The markdown body is the unit's blurb.
+   Units marked `featured: true` also appear on the home page.
    The roster mirrors `../heraldry.md`; keep the two in sync when markings
    change.
 2. Put photos in `src/assets/units/<slug>/` and reference them from the

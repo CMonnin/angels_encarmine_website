@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import { url } from '../lib/url';
 ---
 
 <Base title="Chapter Lore">
@@ -22,7 +23,7 @@ import Base from '../layouts/Base.astro';
     <h2>This army</h2>
     <p>
       The collection is a work in progress: two units photographed so far, the rest assembled or in
-      the paint queue. Watch the <a href="../gallery/">gallery</a> grow.
+      the paint queue. Watch the <a href={url('/gallery/')}>gallery</a> grow.
     </p>
   </div>
 </Base>

@@ -6,19 +6,12 @@ import { url } from '../lib/url';
 const units = await getCollection('units');
 const sorted = [...units].sort((a, b) => a.data.order - b.data.order);
 
-function companySortKey(company: string): string {
-  // "None" sorts after every numbered company; numbers pad so "10th" > "2nd".
-  if (company === 'None') return '99';
-  const n = parseInt(company, 10);
-  return Number.isNaN(n) ? company : String(n).padStart(2, '0');
-}
-
 const helmetColours = [
-  { role: 'Command', helmet: 'Red or Gold', swatches: ['#cc241d', '#d79921'] },
-  { role: 'Veteran', helmet: 'White', swatches: ['#ebdbb2'] },
-  { role: 'Close Support', helmet: 'Yellow', swatches: ['#fabd2f'] },
-  { role: 'Fire Support', helmet: 'Blue', swatches: ['#458588'] },
-  { role: 'Battleline', helmet: 'Red', swatches: ['#cc241d'] },
+  { role: 'Command', helmet: 'Red or Gold', swatches: ['--red', '--gold'] },
+  { role: 'Veteran', helmet: 'White', swatches: ['--text'] },
+  { role: 'Close Support', helmet: 'Yellow', swatches: ['--gold-bright'] },
+  { role: 'Fire Support', helmet: 'Blue', swatches: ['--blue'] },
+  { role: 'Battleline', helmet: 'Red', swatches: ['--red'] },
 ];
 ---
 
@@ -42,7 +35,7 @@ const helmetColours = [
             <td data-value={unit.data.name}>
               <a href={url(`/units/${unit.id}/`)}>{unit.data.name}</a>
             </td>
-            <td data-value={companySortKey(unit.data.company)}>{unit.data.company}</td>
+            <td>{unit.data.company}</td>
             <td>{unit.data.role}</td>
             <td>{unit.data.remarks ?? ''}</td>
           </tr>
@@ -66,7 +59,7 @@ const helmetColours = [
             <td>{row.role}</td>
             <td>
               {row.swatches.map((colour) => (
-                <span class="swatch" style={`background: ${colour}`} />
+                <span class="swatch" style={`background: var(${colour})`} />
               ))}
               {row.helmet}
             </td>
