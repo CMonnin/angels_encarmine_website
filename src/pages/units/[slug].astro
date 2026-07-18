@@ -36,7 +36,9 @@ const { Content } = await render(unit);
       <div class="photo-strip">
         {unit.data.photos.map((photo) => (
           <figure>
-            <Image src={photo.src} alt={photo.alt} width={960} format="webp" />
+            <a href={photo.src.src} class="photo-link" data-full={photo.src.src}>
+              <Image src={photo.src} alt={photo.alt} width={960} format="webp" />
+            </a>
             <figcaption>{photo.alt}</figcaption>
           </figure>
         ))}
@@ -47,6 +49,10 @@ const { Content } = await render(unit);
       </p>
     )
   }
+
+  <dialog id="lightbox">
+    <img id="lightbox-img" src="" alt="" />
+  </dialog>
 
   <div class="prose">
     <Content />
@@ -68,3 +74,45 @@ const { Content } = await render(unit);
     )
   }
 </Base>
+
+<style>
+  #lightbox {
+    padding: 0;
+    border: none;
+    background: transparent;
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+
+  #lightbox::backdrop {
+    background: rgba(0, 0, 0, 0.85);
+  }
+
+  #lightbox img {
+    display: block;
+    max-width: 95vw;
+    max-height: 95vh;
+    width: auto;
+    height: auto;
+  }
+</style>
+
+<script>
+  const lightbox = document.getElementById('lightbox') as HTMLDialogElement;
+  const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+
+  document.querySelectorAll<HTMLAnchorElement>('.photo-link').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      const full = link.dataset.full;
+      if (!full) return;
+      lightboxImg.src = full;
+      lightboxImg.alt = link.querySelector('img')?.alt ?? '';
+      lightbox.showModal();
+    });
+  });
+
+  lightbox.addEventListener('click', (event) => {
+    if (event.target === lightbox) lightbox.close();
+  });
+</script>
