@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
@@ -20,6 +20,23 @@ interface Props {
 
 const { unit } = Astro.props;
 const { Content } = await render(unit);
+
+// The lightbox used to link the untouched original (up to ~900KB), which made the
+// full-res view slow to appear. Serve a webp capped at this width instead, never
+// upscaling past the source.
+const LIGHTBOX_MAX_WIDTH = 2000;
+
+const photos = await Promise.all(
+  unit.data.photos.map(async (photo) => ({
+    alt: photo.alt,
+    thumb: photo.src,
+    full: await getImage({
+      src: photo.src,
+      width: Math.min(LIGHTBOX_MAX_WIDTH, photo.src.width),
+      format: 'webp',
+    }),
+  })),
+);
 ---
 
 <Base title={unit.data.name}>
@@ -32,13 +49,13 @@ const { Content } = await render(unit);
   </p>
 
   {
-    unit.data.photos.length > 0 ? (
+    photos.length > 0 ? (
       <>
         <div class="photo-strip">
-          {unit.data.photos.map((photo) => (
+          {photos.map((photo) => (
             <figure>
-              <a href={photo.src.src} class="photo-link">
-                <Image src={photo.src} alt={photo.alt} width={960} format="webp" />
+              <a href={photo.full.src} class="photo-link">
+                <Image src={photo.thumb} alt={photo.alt} width={960} format="webp" />
               </a>
               <figcaption>{photo.alt}</figcaption>
             </figure>
