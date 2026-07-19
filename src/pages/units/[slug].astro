@@ -95,6 +95,17 @@ const { Content } = await render(unit);
     max-height: 95vh;
     width: auto;
     height: auto;
+    transition: opacity 120ms ease;
+  }
+
+  #lightbox[data-loading] img {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #lightbox img {
+      transition: none;
+    }
   }
 </style>
 
@@ -103,12 +114,30 @@ const { Content } = await render(unit);
   const lightboxImg = document.querySelector<HTMLImageElement>('#lightbox-img');
 
   if (lightbox && lightboxImg) {
+    // An <img> keeps painting its last decoded frame until the new src loads, so
+    // opening the dialog straight after assigning src flashes the previous photo.
+    // Open immediately (responsive), but keep the image hidden until it can paint.
+    let latestRequest = 0;
+
     document.querySelectorAll<HTMLAnchorElement>('.photo-link').forEach((link) => {
-      link.addEventListener('click', (event) => {
+      link.addEventListener('click', async (event) => {
         event.preventDefault();
+        const request = ++latestRequest;
+
+        lightbox.setAttribute('data-loading', '');
         lightboxImg.src = link.href;
         lightboxImg.alt = link.querySelector('img')?.alt ?? '';
         lightbox.showModal();
+
+        try {
+          await lightboxImg.decode();
+        } catch {
+          // Superseded by a later click, or the image failed to load; either way
+          // reveal it so a broken image is visible rather than silently blank.
+        }
+
+        // A slow decode must not un-hide a photo the user has already clicked past.
+        if (request === latestRequest) lightbox.removeAttribute('data-loading');
       });
     });
 
